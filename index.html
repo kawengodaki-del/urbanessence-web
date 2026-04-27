@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <title>UrbanEssenceSRC</title>
+    
+
+  </head>
+    
+  <body>
+  <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UrbanEssence | Alta Perfumería Árabe 3D Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* ==========================================================================
+           1. VARIABLES Y RESET (ILUMINACIÓN 3D MEJORADA Y OPTIMIZADA)
+           ========================================================================== */
+        :root {
+            --gold-primary: #FFD700;
+            --gold-light: #F3E5AB;
+            --gold-dark: #B8860B;
+            --gold-glow: rgba(255, 215, 0, 0.5);
+            --red-premium: #ef4444;
+            --red-dark: #b91c1c;
+            --red-glow: rgba(239, 68, 68, 0.5);
+            --bg-dark: #050505;
+            --bg-card: linear-gradient(145deg, #121212, #050505);
+            --glass-bg: rgba(20, 20, 20, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --nav-mobile: rgba(5, 5, 5, 0.95);
+            /* Sombras optimizadas para mejor rendimiento */
+            --shadow-3d: 10px 10px 30px rgba(0,0,0,0.9), -5px -5px 15px rgba(255,255,255,0.02);
+        }
+
+        html { 
+            scroll-behavior: smooth; 
+            -webkit-tap-highlight-color: transparent;
+            cursor: none;
+        }
+        
+        body { 
+            background-color: var(--bg-dark); 
+            color: #ffffff; 
+            font-family: 'Inter', system-ui, -apple-system, sans-serif; 
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 90px;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(255, 215, 0, 0.04), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(239, 68, 68, 0.02), transparent 25%);
+        }
+
+        @media (min-width: 768px) { body { padding-bottom: 0; } }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; border: 1px solid #444; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--gold-primary); box-shadow: 0 0 10px var(--gold-glow); }
+
+        /* ==========================================================================
+           2. CUSTOM CURSOR INTERACTIVO
+           ========================================================================== */
+        .cursor-dot {
+            width: 8px; height: 8px;
+            background: var(--gold-primary);
+            position: fixed; top: 0; left: 0;
+            border-radius: 50%;
+            pointer-events: none; z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s;
+            box-shadow: 0 0 10px var(--gold-glow);
+            will-change: transform, left, top;
+        }
+        .cursor-outline {
+            width: 40px; height: 40px;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            position: fixed; top: 0; left: 0;
+            border-radius: 50%;
+            pointer-events: none; z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: width 0.3s, height 0.3s, border-color 0.3s;
+            box-shadow: inset 0 0 10px rgba(255, 215, 0, 0.2);
+            will-change: transform, left, top;
+        }
+        body:hover .cursor-dot { opacity: 1; }
+        .cursor-hover .cursor-dot { width: 15px; height: 15px; background: #fff; box-shadow: 0 0 20px #fff; }
+        .cursor-hover .cursor-outline { width: 60px; height: 60px; border-color: #fff; transform: translate(-50%, -50%) rotate(45deg); border-style: dashed; }
+
+        /* ==========================================================================
+           3. PRELOADER CINEMATOGRÁFICO
+           ========================================================================== */
+        #preloader {
+            position: fixed; inset: 0; background: var(--bg-dark);
+            z-index: 999999; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            transition: opacity 0.6s ease-out, visibility 0.6s;
+            perspective: 1000px;
+        }
+        #preloader.loaded { opacity: 0; visibility: hidden; }
+
+        .loader-logo {
+            font-size: 2rem; letter-spacing: 0.5em; text-transform: uppercase;
+            color: white; transform-style: preserve-3d;
+            animation: float3D 3s infinite ease-in-out alternate, pulseGlow 2s infinite alternate;
+            will-change: transform;
+        }
+
+        .loader-bar { width: 200px; height: 2px; background: rgba(255,255,255,0.1); margin-top: 2rem; position: relative; overflow: hidden; }
+        .loader-progress { position: absolute; top: 0; left: 0; height: 100%; background: var(--gold-primary); width: 0%; box-shadow: 0 0 15px var(--gold-glow); animation: fillBar 1.5s ease-out forwards; }
+
+        @keyframes fillBar { to { width: 100%; } }
+        @keyframes pulseGlow { 0% { text-shadow: 0 0 5px transparent; } 100% { text-shadow: 0 0 20px var(--gold-glow), 0 0 40px rgba(255,255,255,0.2); } }
+        @keyframes float3D { 0% { transform: translateZ(0) rotateX(5deg); } 100% { transform: translateZ(30px) rotateX(-5deg); } }
+
+        /* ==========================================================================
+           4. FONDOS ANIMADOS (PARALLAX & BLOBS 3D OPTIMIZADOS)
+           ========================================================================== */
+        .blob-container { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; perspective: 1000px; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.5; animation: floatBlob 25s infinite ease-in-out alternate; will-change: transform; }
+        
+        .blob-1 { width: 45vw; height: 45vw; background: radial-gradient(circle, rgba(255, 215, 0, 0.1), transparent); top: -10%; left: -10%; }
+        .blob-2 { width: 55vw; height: 55vw; background: radial-gradient(circle, rgba(239, 68, 68, 0.08), transparent); bottom: -20%; right: -10%; animation-delay: -5s; animation-duration: 30s; }
+        .blob-3 { width: 40vw; height: 40vw; background: radial-gradient(circle, rgba(255, 255, 255, 0.03), transparent); top: 40%; left: 60%; animation-delay: -10s; }
+
+        @keyframes floatBlob {
+            0% { transform: translate3d(0, 0, -50px) scale(1); }
+            100% { transform: translate3d(5%, 10%, 50px) scale(1.1); }
+        }
+
+        /* ==========================================================================
+           5. COMPONENTES UI 3D (TARJETAS Y CRISTAL ILUMINADO)
+           ========================================================================== */
+        .glass-panel {
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); box-shadow: var(--shadow-3d);
+            border-top: 1px solid rgba(255,255,255,0.1); border-left: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .perfume-card {
+            background: var(--bg-card); border: 1px solid var(--glass-border);
+            position: relative; transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            overflow: visible; border-radius: 1.5rem;
+            transform-style: preserve-3d;
+            box-shadow: 5px 5px 20px rgba(0,0,0,0.8), inset 1px 1px 2px rgba(255,255,255,0.05);
+            will-change: transform;
+        }
+
+        .perfume-card::before {
+            content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+            transform: skewX(-25deg) translateZ(10px); transition: left 0.8s ease-in-out;
+            z-index: 10; pointer-events: none; border-radius: 1.5rem;
+        }
+
+        .perfume-card:hover::before { left: 150%; }
+        
+        .perfume-card:hover { 
+            border-color: rgba(255, 215, 0, 0.5);
+            box-shadow: 0 20px 40px rgba(0,0,0,1), 0 0 20px rgba(255, 215, 0, 0.15), inset 1px 1px 3px rgba(255,255,255,0.2);
+            z-index: 20;
+        }
+        .perfume-card.card-11:hover { border-color: rgba(239, 68, 68, 0.6); box-shadow: 0 20px 40px rgba(0,0,0,1), 0 0 20px rgba(239, 68, 68, 0.2), inset 1px 1px 3px rgba(255,255,255,0.2); }
+
+        .img-wrapper {
+            width: 100%; height: 280px; display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(circle at 50% 50%, #151515 0%, #000000 100%);
+            border-radius: 1.2rem; margin-bottom: 1.5rem; position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.05); box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+            transform-style: preserve-3d; overflow: visible;
+        }
+
+        .img-wrapper img, #modal-img { display: none !important; }
+
+        .hologram-container {
+            width: 120px; height: 180px; position: relative;
+            transform-style: preserve-3d; transition: transform 0.4s ease-out;
+            transform: translateZ(30px);
+            will-change: transform;
+        }
+        .perfume-card:hover .hologram-container { transform: translateZ(60px) rotateY(15deg) scale(1.05); }
+
+        .hologram-core {
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px; backdrop-filter: blur(4px);
+            box-shadow: inset 0 0 15px rgba(255,255,255,0.1), 0 10px 20px rgba(0,0,0,0.5);
+            animation: hologramFloat 4s infinite ease-in-out;
+            display: flex; align-items: center; justify-content: center;
+            will-change: transform;
+        }
+        .hologram-core::after {
+            content: ''; position: absolute; bottom: -20px; left: 10%; width: 80%; height: 8px;
+            background: radial-gradient(ellipse at center, var(--gold-glow) 0%, transparent 70%);
+            filter: blur(4px); animation: shadowPulse 4s infinite ease-in-out;
+        }
+
+        .card-11 .hologram-core::after { background: radial-gradient(ellipse at center, var(--red-glow) 0%, transparent 70%); }
+        .card-11 .hologram-core i { color: var(--red-premium) !important; text-shadow: 0 0 15px var(--red-glow); }
+
+        .hologram-core i { font-size: 3.5rem; color: var(--gold-primary); text-shadow: 0 0 20px var(--gold-glow); transform: translateZ(20px); transition: transform 0.3s; }
+        .perfume-card:hover .hologram-core i { transform: translateZ(40px) scale(1.1); }
+
+        @keyframes hologramFloat {
+            0%, 100% { transform: translateY(0) translateZ(10px); }
+            50% { transform: translateY(-10px) translateZ(10px); }
+        }
+        @keyframes shadowPulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.8); }
+        }
+
+        .card-content-3d { transform: translateZ(20px); will-change: transform; }
+
+        /* ==========================================================================
+           6. BOTONES INTERACTIVOS 3D
+           ========================================================================== */
+        .btn-outline {
+            background: linear-gradient(to bottom, rgba(30,30,30,0.6), rgba(10,10,10,0.9));
+            border: 1px solid rgba(255, 255, 255, 0.15); color: rgba(255, 255, 255, 0.9);
+            padding: 1rem 2rem; border-radius: 50px; font-weight: 600; letter-spacing: 2px;
+            text-transform: uppercase; font-size: 0.75rem;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            cursor: none; position: relative; overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.1);
+            transform-style: preserve-3d; transition: all 0.3s ease;
+            will-change: transform;
+        }
+        
+        .btn-outline::before {
+            content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0;
+            background: rgba(255, 215, 0, 0.25); border-radius: 50%;
+            transform: translate(-50%, -50%); transition: width 0.5s ease, height 0.5s ease; z-index: 0;
+        }
+        .btn-outline-red::before { background: rgba(239, 68, 68, 0.25); }
+        
+        .btn-outline > * { position: relative; z-index: 1; transform: translateZ(10px); }
+
+        .btn-outline:hover {
+            border-color: var(--gold-primary); color: #fff;
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6), 0 0 15px rgba(255, 215, 0, 0.4), inset 0 1px 1px rgba(255,255,255,0.3);
+        }
+        .btn-outline:hover::before { width: 300px; height: 300px; }
+        
+        .btn-outline-red:hover {
+            border-color: var(--red-premium) !important; color: #fff !important;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6), 0 0 15px rgba(239, 68, 68, 0.4), inset 0 1px 1px rgba(255,255,255,0.3);
+        }
+
+        .btn-outline.active {
+            border-color: var(--gold-primary); color: #fff; background: rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4), inset 0 0 10px rgba(255, 215, 0, 0.3);
+            transform: translateY(-1px);
+        }
+        .btn-outline-red.active {
+            border-color: var(--red-premium) !important; color: #fff !important; background: rgba(239, 68, 68, 0.2) !important;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4), inset 0 0 10px rgba(239, 68, 68, 0.3) !important;
+        }
+
+        /* ==========================================================================
+           7. NAVEGACIÓN MÓVIL INFERIOR
+           ========================================================================== */
+        .mobile-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: var(--nav-mobile); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between;
+            padding: 0.8rem 1rem; z-index: 900; padding-bottom: calc(0.8rem + env(safe-area-inset-bottom));
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.9);
+        }
+
+        @media (min-width: 768px) { .mobile-nav { display: none; } }
+
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            color: rgba(255,255,255,0.4); font-size: 0.65rem; text-transform: uppercase; font-weight: 600;
+            transition: all 0.3s ease; width: 25%; cursor: none;
+        }
+        
+        .nav-item i { font-size: 1.4rem; transition: transform 0.3s ease, color 0.3s ease; }
+        
+        .nav-item.active { color: var(--gold-primary); }
+        .nav-item.active i { transform: translateY(-5px) scale(1.1); text-shadow: 0 5px 10px var(--gold-glow); }
+        
+        .nav-item.active-red { color: var(--red-premium); }
+        .nav-item.active-red i { transform: translateY(-5px) scale(1.1); text-shadow: 0 5px 10px var(--red-glow); }
+
+        /* ==========================================================================
+           8. TOAST NOTIFICATIONS 3D (SOCIAL PROOF)
+           ========================================================================== */
+        #toast-container { position: fixed; bottom: 100px; left: 20px; z-index: 1000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; perspective: 1000px; }
+        @media (min-width: 768px) { #toast-container { bottom: 30px; left: 30px; } }
+
+        .toast {
+            background: linear-gradient(135deg, rgba(20,20,20,0.95), rgba(5,5,5,0.98));
+            border: 1px solid var(--glass-border);
+            border-left: 4px solid var(--gold-primary); padding: 12px 20px; border-radius: 12px;
+            display: flex; align-items: center; gap: 15px;
+            box-shadow: 10px 10px 30px rgba(0,0,0,0.8);
+            transform: translateX(-150%) rotateY(-10deg); opacity: 0;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform, opacity;
+        }
+        .toast.show { transform: translateX(0) rotateY(0deg); opacity: 1; }
+
+        /* ==========================================================================
+           9. MODAL "VENTANITA" 3D Y ANIMACIONES REVEAL (BUG SOLUCIONADO AQUÍ)
+           ========================================================================== */
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 0.8s ease-out; will-change: transform, opacity; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        
+        .seccion-catalogo { display: none; }
+        .seccion-catalogo.activa { display: block; animation: smoothFadeIn 0.6s ease-out forwards; }
+        
+        @keyframes smoothFadeIn {
+            from { opacity: 0; transform: translateY(20px); filter: blur(3px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        #modal-overlay {
+            /* ESTE ES EL FIX PRINCIPAL: Hace que la ventanita cubra toda la pantalla y se vea siempre */
+            position: fixed; inset: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            opacity: 0; visibility: hidden; transition: all 0.4s ease;
+            z-index: 9999; perspective: 1500px; display: flex; justify-content: center; align-items: center;
+        }
+        #modal-overlay.activo { opacity: 1; visibility: visible; }
+        
+        #modal-content { 
+            transform: translateY(50px) scale(0.9); 
+            opacity: 0; transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); 
+            width: 90%; max-width: 450px; 
+            background: var(--bg-card);
+            border-radius: 2rem; padding: 2rem;
+            box-shadow: 0 30px 60px rgba(0,0,0,1), inset 0 2px 5px rgba(255,255,255,0.1);
+            border: 1px solid var(--gold-glow);
+            position: relative;
+            will-change: transform, opacity;
+        }
+        #modal-overlay.activo #modal-content { transform: translateY(0) scale(1); opacity: 1; }
+
+        .text-gold { color: var(--gold-primary) !important; text-shadow: 0 0 10px rgba(255,215,0,0.4); }
+        .text-red-custom { color: var(--red-premium) !important; text-shadow: 0 0 10px rgba(239,68,68,0.4); }
+        
+        @keyframes subtlePulse { 0%, 100% { opacity: 0.6; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1); text-shadow: 0 0 20px var(--gold-glow); } }
+        .animate-subtle-pulse { animation: subtlePulse 3s infinite ease-in-out; }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"></div>
+    <div class="cursor-outline"></div>
+
+    <div id="preloader">
+        <div class="loader-logo">Urban<span class="text-gold italic font-serif">Essence</span></div>
+        <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+
+    <div class="blob-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav class="p-5 md:p-6 flex justify-between items-center border-b border-white/5 backdrop-blur-md sticky top-0 z-50 shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+        <h1 class="text-lg md:text-xl font-serif tracking-widest uppercase cursor-hover-target">Urban<span class="text-gold">Essence</span></h1>
+        <div class="space-x-6 text-xs uppercase tracking-widest hidden md:block font-bold opacity-90">
+            <a href="#about" class="cursor-hover-target hover:text-gold transition duration-300">Garantía 3D</a>
+            <a href="#contacto" class="cursor-hover-target hover:text-gold transition duration-300">Soporte VIP</a>
+        </div>
+    </nav>
+
+    <header class="py-16 md:py-24 px-4 text-center relative z-10 flex flex-col items-center reveal active" style="transform-style: preserve-3d;">
+        <div class="inline-block mb-5 px-6 py-2 rounded-full border border-gold/50 bg-gold/10 text-gold text-[10px] uppercase tracking-[0.4em] font-bold shadow-[0_0_20px_rgba(255,215,0,0.2)]">
+            Distribuidor Autorizado Oficial
+        </div>
+        <h2 class="text-5xl md:text-7xl font-light mb-4 tracking-tighter" style="text-shadow: 0 10px 30px rgba(0,0,0,0.9);">Urban<span class="italic font-serif text-gold">Essence</span></h2>
+        <p class="text-gray-300 max-w-xl mx-auto text-xs font-medium tracking-[0.2em] mb-10 leading-relaxed uppercase">
+            Colección Privada de Alta Perfumería Árabe y Espejo 1.1 • Experiencia Interactiva
+        </p>
+        
+        <div class="hidden md:flex flex-wrap justify-center gap-5 w-full max-w-4xl px-2 relative z-20">
+            <button onclick="mostrarCatalogo('mujeres')" id="btn-mujeres" class="btn-outline cursor-hover-target">
+                <i class="fas fa-venus text-pink-400 drop-shadow-md"></i> Colección Dama
+            </button>
+            <button onclick="mostrarCatalogo('unisex')" id="btn-unisex" class="btn-outline cursor-hover-target">
+                <i class="fas fa-infinity text-purple-400 drop-shadow-md"></i> Colección Unisex
+            </button>
+            <button onclick="mostrarCatalogo('hombres')" id="btn-hombres" class="btn-outline cursor-hover-target">
+                <i class="fas fa-mars text-blue-400 drop-shadow-md"></i> Colección Caballero
+            </button>
+            <button onclick="mostrarCatalogo('replica')" id="btn-replica" class="btn-outline btn-outline-red cursor-hover-target">
+                <i class="fas fa-clone text-red-400 drop-shadow-md"></i> Calidad 1.1 Espejo
+            </button>
+        </div>
+
+        <div id="indicador-seccion" class="mt-12 md:mt-20 reveal active transition-opacity duration-500">
+            <p class="text-gold text-[10px] uppercase tracking-[0.3em] animate-subtle-pulse font-bold flex flex-col items-center gap-3">
+                Interactúa con el catálogo 3D
+                <i class="fas fa-chevron-down text-lg"></i>
+            </p>
+        </div>
+    </header>
+
+    <section id="seccion-mujeres" class="seccion-catalogo max-w-7xl mx-auto p-4 relative z-10">
+        <div class="flex items-center gap-4 mb-8 md:mb-12 reveal">
+            <h2 class="text-2xl md:text-3xl font-light tracking-widest uppercase text-white opacity-90 drop-shadow-lg">Originales <span class="text-gold italic font-serif">Dama</span></h2>
+            <div class="flex-1 border-b border-white/20"></div>
+        </div>
+        <div id="grid-mujer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"></div>
+    </section>
+
+    <section id="seccion-unisex" class="seccion-catalogo max-w-7xl mx-auto p-4 relative z-10">
+        <div class="flex items-center gap-4 mb-8 md:mb-12 reveal">
+            <h2 class="text-2xl md:text-3xl font-light tracking-widest uppercase text-white opacity-90 drop-shadow-lg">Originales <span class="text-gold italic font-serif">Unisex</span></h2>
+            <div class="flex-1 border-b border-white/20"></div>
+        </div>
+        <div id="grid-unisex" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"></div>
+    </section>
+
+    <section id="seccion-hombres" class="seccion-catalogo max-w-7xl mx-auto p-4 relative z-10">
+        <div class="flex items-center gap-4 mb-8 md:mb-12 reveal">
+            <h2 class="text-2xl md:text-3xl font-light tracking-widest uppercase text-white opacity-90 drop-shadow-lg">Originales <span class="text-gold italic font-serif">Caballero</span></h2>
+            <div class="flex-1 border-b border-white/20"></div>
+        </div>
+        <div id="grid-hombre" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"></div>
+    </section>
+
+    <section id="seccion-replica" class="seccion-catalogo max-w-7xl mx-auto p-4 relative z-10">
+        <div class="flex items-center gap-4 mb-8 md:mb-12 reveal">
+            <h2 class="text-2xl md:text-3xl font-light tracking-widest uppercase text-white opacity-90 drop-shadow-lg">Línea <span class="text-red-custom italic font-serif">Espejo 1.1</span></h2>
+            <div class="flex-1 border-b border-white/20"></div>
+        </div>
+        <div id="grid-replica" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8"></div>
+    </section>
+
+    <div id="modal-overlay">
+        <div id="modal-content">
+            
+            <button onclick="cerrarModal()" class="cursor-hover-target absolute -top-4 -right-4 text-white w-10 h-10 flex items-center justify-center rounded-full bg-red-600 hover:bg-red-500 transition shadow-[0_5px_15px_rgba(239,68,68,0.5)] z-50 border-2 border-white">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div class="flex flex-col items-center text-center">
+                <div class="mb-4 bg-black/50 p-4 rounded-full border border-gold/30 shadow-[inset_0_0_15px_rgba(255,215,0,0.2)]">
+                    <i id="modal-icon-3d" class="fas fa-gem fa-3x text-gold drop-shadow-glow"></i>
+                </div>
+                
+                <h3 id="modal-titulo" class="text-3xl font-bold mb-1 tracking-tight text-white drop-shadow-md">Nombre</h3>
+                <p id="modal-subtitulo" class="text-gray-400 text-[10px] uppercase tracking-widest mb-4 font-bold">Marca</p>
+                
+                <div class="w-full flex justify-center gap-2 mb-6">
+                    <span id="modal-familia" class="px-3 py-1 bg-white/10 rounded-full text-[10px] uppercase font-bold text-gray-200 border border-white/20 shadow-inner flex items-center gap-2">
+                        <i class="fas fa-leaf text-gold"></i> Familia
+                    </span>
+                    <span id="modal-duracion" class="px-3 py-1 bg-gold/20 rounded-full text-[10px] uppercase font-bold text-gold border border-gold/40 shadow-inner flex items-center gap-2">
+                        <i class="fas fa-clock"></i> Duración
+                    </span>
+                </div>
+
+                <div id="modal-badge-calidad" class="hidden"></div>
+                <div id="modal-precios-container" class="w-full flex flex-col gap-3 mb-6"></div>
+
+                <div class="w-full mt-2">
+                    <a id="modal-btn-comprar" href="#" target="_blank" class="cursor-hover-target w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-400 hover:to-green-500 text-white py-4 rounded-xl font-bold flex items-center justify-center gap-3 tracking-widest uppercase text-sm shadow-[0_10px_20px_rgba(34,197,94,0.3)] transition-all transform hover:-translate-y-1">
+                        <i class="fab fa-whatsapp text-2xl drop-shadow-md"></i> Contactar Asesor
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div class="mobile-nav shadow-[0_-10px_20px_rgba(0,0,0,0.5)]">
+        <div class="nav-item cursor-hover-target" id="mob-mujeres" onclick="mostrarCatalogo('mujeres')">
+            <i class="fas fa-venus"></i><span>Dama</span>
+        </div>
+        <div class="nav-item cursor-hover-target" id="mob-unisex" onclick="mostrarCatalogo('unisex')">
+            <i class="fas fa-infinity"></i><span>Unisex</span>
+        </div>
+        <div class="nav-item cursor-hover-target" id="mob-hombres" onclick="mostrarCatalogo('hombres')">
+            <i class="fas fa-mars"></i><span>Caballero</span>
+        </div>
+        <div class="nav-item cursor-hover-target" id="mob-replica" onclick="mostrarCatalogo('replica')">
+            <i class="fas fa-clone"></i><span>Línea 1.1</span>
+        </div>
+    </div>
+
+    <footer id="contacto" class="mt-20 py-16 text-center border-t border-white/10 relative z-10 bg-black/90 backdrop-blur-xl shadow-[0_-10px_40px_rgba(0,0,0,0.8)]">
+        <div class="max-w-4xl mx-auto px-4 reveal">
+            <i class="fas fa-crown text-4xl text-gold mb-6 drop-shadow-[0_0_15px_rgba(255,215,0,0.5)]"></i>
+            <h2 class="text-3xl md:text-4xl font-light text-gold mb-8 tracking-wide drop-shadow-md">Las mejores lociones al mejor precio</h2>
+            
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-6 mb-12">
+                <a href="https://wa.me/573215228914" target="_blank" class="cursor-hover-target w-full sm:w-auto bg-white/5 border border-white/10 px-8 py-4 rounded-xl flex items-center justify-center gap-4 transition-all hover:border-green-500 hover:bg-green-500/10 group shadow-lg">
+                    <i class="fab fa-whatsapp text-gray-400 group-hover:text-green-500 text-2xl transition"></i>
+                    <span class="font-bold tracking-widest text-sm text-white/90">+57 321 5228914</span>
+                </a>
+                <a href="https://instagram.com/urban_essence_src" target="_blank" class="cursor-hover-target w-full sm:w-auto bg-white/5 border border-white/10 px-8 py-4 rounded-xl flex items-center justify-center gap-4 transition-all hover:border-pink-500 hover:bg-pink-500/10 group shadow-lg">
+                    <i class="fab fa-instagram text-gray-400 group-hover:text-pink-500 text-2xl transition"></i>
+                    <span class="font-bold tracking-widest text-sm text-white/90">@urban_essence_src</span>
+                </a>
+            </div>
+
+            <p class="text-gray-500 text-[10px] md:text-xs uppercase tracking-[0.4em] mb-2 font-bold">&copy; 2026 UrbanEssence. Reservados todos los derechos.</p>
+            <p class="text-gray-700 text-[9px] uppercase tracking-[0.3em]">Experiencia 3D Interactiva</p>
+        </div>
+    </footer>
+
+    <script>
+        /* ==========================================================================
+           CUSTOM CURSOR LOGIC (Optimizado)
+           ========================================================================== */
+        const cursorDot = document.querySelector('.cursor-dot');
+        const cursorOutline = document.querySelector('.cursor-outline');
+        let mouseX = 0, mouseY = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            cursorDot.style.left = `${mouseX}px`;
+            cursorDot.style.top = `${mouseY}px`;
+
+            cursorOutline.animate({
+                left: `${mouseX}px`,
+                top: `${mouseY}px`
+            }, { duration: 100, fill: "forwards" });
+        });
+
+        const hoverTargets = document.querySelectorAll('.cursor-hover-target, button, a');
+        hoverTargets.forEach(target => {
+            target.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            target.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+
+        /* ==========================================================================
+           LÓGICA Y BASE DE DATOS EXACTA
+           ========================================================================== */
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('preloader').classList.add('loaded');
+                setTimeout(revelarElementos, 300);
+            }, 1200);
+        });
+
+        const imgPink = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=600&q=80';
+        const imgDark = 'https://images.unsplash.com/photo-1615397323282-3151121df4c6?auto=format&fit=crop&w=600&q=80';
+        const imgGold = 'https://images.unsplash.com/photo-1585386959920-141b015e839f?auto=format&fit=crop&w=600&q=80';
+        const imgRed = 'https://images.unsplash.com/photo-1595425970377-c9703bc48b2d?auto=format&fit=crop&w=600&q=80';
+        const imgClear = 'https://images.unsplash.com/photo-1592914610354-fd354d45fe82?auto=format&fit=crop&w=600&q=80';
+
+        const database = [
+            // --- ORIGINALES MUJER ---
+            { id: 'yara', titulo: 'Yara', subtitulo: 'Lattafa', genero: 'mujer', img: imgPink, familia: 'Gourmand Dulce', notas: 'Orquídea, Frutas Tropicales, Vainilla', duracion: '6 - 8 horas', pOrig: '240.000', p11: '120.000' },
+            { id: 'yara_candy', titulo: 'Yara Candy', subtitulo: 'Lattafa', genero: 'mujer', img: imgPink, familia: 'Frutal Dulce', notas: 'Caramelo, Frutos Rojos, Vainilla', duracion: '6 - 8 horas', pOrig: '250.000', p11: '120.000' },
+            { id: 'yara_elixir', titulo: 'Yara Elixir', subtitulo: 'Lattafa', genero: 'mujer', img: imgRed, familia: 'Floral Dulce', notas: 'Rosa, Jazmín, Vainilla', duracion: '8 - 10 horas', pOrig: '380.000', p11: null },
+            { id: 'delilah', titulo: 'Delilah', subtitulo: 'Maison Alhambra', genero: 'mujer', img: imgPink, familia: 'Floral Rosas', notas: 'Ruibarbo, Peonía, Incienso', duracion: '8 - 10 horas', pOrig: '300.000', p11: null },
+            { id: 'mayar', titulo: 'Mayar', subtitulo: 'Lattafa', genero: 'mujer', img: imgPink, familia: 'Frutal Fresco', notas: 'Lichi, Frambuesa, Almizcle', duracion: '8 horas', pOrig: '280.000', p11: '170.000' },
+            { id: 'mayar_cherry', titulo: 'Mayar Cherry', subtitulo: 'Lattafa', genero: 'mujer', img: imgRed, familia: 'Frutal Gourmand', notas: 'Cereza, Almendra, Haba Tonka', duracion: '8 - 10 horas', pOrig: '440.000', p11: null },
+            { id: 'eclaire_pistache', titulo: 'Eclaire Pistache', subtitulo: 'Lattafa', genero: 'mujer', img: imgClear, familia: 'Gourmand Dulce', notas: 'Pistacho, Cacao, Crema, Vainilla', duracion: '7 - 9 horas', pOrig: '440.000', p11: null },
+            { id: 'eclaire_banoffi', titulo: 'Eclaire Banoffi', subtitulo: 'Lattafa', genero: 'mujer', img: imgGold, familia: 'Gourmand Dulce', notas: 'Plátano, Caramelo Toffee, Galleta', duracion: '8 - 10 horas', pOrig: '440.000', p11: null },
+            { id: 'now_women', titulo: 'Now Women', subtitulo: 'Rave', genero: 'mujer', img: imgPink, familia: 'Frutal Dulce', notas: 'Frutos rojos, Nubes de azúcar', duracion: '6 - 8 horas', pOrig: '220.000', p11: null },
+            { id: 'teriaq_women', titulo: 'Teriaq Women', subtitulo: 'Lattafa', genero: 'mujer', img: imgGold, familia: 'Ámbar Dulce', notas: 'Caramelo, Miel, Cuero Sutil', duracion: '8 - 10 horas', pOrig: '300.000', p11: null },
+            { id: 'billie_eilish', titulo: 'Billie Eilish', subtitulo: 'Original', genero: 'mujer', img: imgGold, familia: 'Ámbar Vainilla', notas: 'Cacao, Especias, Vainilla', duracion: '6 - 8 horas', pOrig: '460.000', p11: null },
+            { id: 'billie_eilish_2', titulo: 'Billie Eilish #2', subtitulo: 'Original', genero: 'mujer', img: imgDark, familia: 'Amaderado Aromático', notas: 'Pimienta, Palo Santo, Ébano', duracion: '6 - 8 horas', pOrig: '470.000', p11: null },
+
+            // --- ORIGINALES HOMBRE ---
+            { id: 'asad', titulo: 'Asad', subtitulo: 'Lattafa', genero: 'hombre', img: imgDark, familia: 'Ámbar Especiado', notas: 'Pimienta, Tabaco, Vainilla', duracion: '8 - 10 horas', pOrig: '240.000', p11: '120.000' },
+            { id: 'asad_bourbon', titulo: 'Asad Bourbon', subtitulo: 'Lattafa', genero: 'hombre', img: imgGold, familia: 'Amaderado Especiado', notas: 'Bourbon, Canela, Maderas', duracion: '8 - 10 horas', pOrig: '270.000', p11: '140.000' },
+            { id: 'fakhar_black', titulo: 'Fakhar Black', subtitulo: 'Lattafa', genero: 'hombre', img: imgDark, familia: 'Fresco Aromático', notas: 'Manzana, Lavanda, Haba Tonka', duracion: '6 - 8 horas', pOrig: '240.000', p11: '100.000' },
+            { id: 'fakhar_gold', titulo: 'Fakhar Gold', subtitulo: 'Lattafa', genero: 'hombre', img: imgGold, familia: 'Ámbar Floral', notas: 'Nardos, Cachemira, Cuero', duracion: '6 - 8 horas', pOrig: '240.000', p11: '100.000' },
+            { id: '9pm', titulo: '9PM', subtitulo: 'Afnan', genero: 'hombre', img: imgDark, familia: 'Ámbar Vainilla', notas: 'Manzana, Canela, Ámbar', duracion: '10 - 12+ horas', pOrig: '290.000', p11: '60.000' },
+            { id: '9pm_rebel', titulo: '9PM Rebel', subtitulo: 'Afnan', genero: 'hombre', img: imgRed, familia: 'Frutal Amaderado', notas: 'Frutos oscuros, Cuero, Pachulí', duracion: '8 - 10 horas', pOrig: '370.000', p11: '70.000' },
+            { id: 'hawas_black', titulo: 'Hawas Black', subtitulo: 'Rasasi', genero: 'hombre', img: imgDark, familia: 'Acuático Oscuro', notas: 'Ciruela, Notas Marinas, Ámbar', duracion: '10 - 12+ horas', pOrig: '300.000', p11: null },
+            { id: 'nitro_black', titulo: 'Nitro Black', subtitulo: 'Dumont', genero: 'hombre', img: imgDark, familia: 'Frutal Ahumado', notas: 'Piña asada, Abedul, Cuero', duracion: '10 - 12+ horas', pOrig: '300.000', p11: null },
+            { id: 'nitro_red', titulo: 'Nitro Red', subtitulo: 'Dumont', genero: 'hombre', img: imgRed, familia: 'Frutal Aromático', notas: 'Sandía, Lavanda, Maderas', duracion: '6 - 9 horas', pOrig: '320.000', p11: null },
+            { id: 'nitro_green', titulo: 'Nitro Green', subtitulo: 'Dumont', genero: 'hombre', img: imgClear, familia: 'Fresco Verde', notas: 'Menta, Notas florales, Ámbar', duracion: '10 - 12+ horas', pOrig: '300.000', p11: null },
+            { id: 'qaed_fursan', titulo: 'Qaed Al Fursan', subtitulo: 'Lattafa', genero: 'hombre', img: imgDark, familia: 'Frutal Amaderado', notas: 'Piña dulce, Azafrán, Oud', duracion: '6 - 8 horas', pOrig: '220.000', p11: null },
+            { id: 'animale_men', titulo: 'Anímale For Men', subtitulo: 'Animale', genero: 'hombre', img: imgClear, familia: 'Fougère Clásico', notas: 'Limón, Lavanda, Musgo', duracion: '6 - 8 horas', pOrig: '270.000', p11: null },
+
+            // --- ORIGINALES UNISEX ---
+            { id: 'khamrah', titulo: 'Khamrah', subtitulo: 'Lattafa', genero: 'unisex', img: imgGold, familia: 'Gourmand Especiado', notas: 'Coñac, Dátiles, Vainilla', duracion: '10 - 12+ horas', pOrig: '300.000', p11: '160.000' },
+            { id: 'khamrah_qahwa', titulo: 'Khamrah Qahwa', subtitulo: 'Lattafa', genero: 'unisex', img: imgDark, familia: 'Gourmand Café', notas: 'Café, Praliné, Tonka', duracion: '10 - 12+ horas', pOrig: '300.000', p11: '160.000' },
+            { id: 'cdn_intense', titulo: 'Club de Nuit Intense', subtitulo: 'Armaf', genero: 'unisex', img: imgDark, familia: 'Cítrico Amaderado', notas: 'Limón, Abedul, Almizcle', duracion: '10 - 12 horas', pOrig: '300.000', p11: null },
+            { id: 'cdn_sillage', titulo: 'Club de Nuit Sillage', subtitulo: 'Armaf', genero: 'unisex', img: imgClear, familia: 'Almizcle Floral', notas: 'Bergamota, Té verde, Ambroxan', duracion: '8 - 10 horas', pOrig: '360.000', p11: null },
+            { id: 'cdn_untold', titulo: 'Club de Nuit Untold', subtitulo: 'Armaf', genero: 'unisex', img: imgRed, familia: 'Ámbar Dulce', notas: 'Azafrán, Ámbar gris, Cedro', duracion: '10 - 12+ horas', pOrig: '300.000', p11: '120.000' },
+            { id: 'odyssey_candee', titulo: 'Odyssey Candee', subtitulo: 'Armaf', genero: 'unisex', img: imgPink, familia: 'Gourmand Dulce', notas: 'Frutas, Malvavisco, Algodón', duracion: '8 - 10 horas', pOrig: '300.000', p11: null },
+            { id: 'odyssey_marsh', titulo: 'Odyssey Marshmallow', subtitulo: 'Armaf', genero: 'unisex', img: imgClear, familia: 'Gourmand Dulce', notas: 'Azúcar, Malvavisco, Vainilla', duracion: '8 - 10 horas', pOrig: '360.000', p11: null },
+            { id: 'odyssey_toffee', titulo: 'Odyssey Toffee Coffee', subtitulo: 'Armaf', genero: 'unisex', img: imgGold, familia: 'Gourmand Café', notas: 'Café tostado, Caramelo Toffee', duracion: '6 - 8 horas', pOrig: '390.000', p11: null },
+            { id: 'nebras', titulo: 'Nebras', subtitulo: 'Lattafa', genero: 'unisex', img: imgRed, familia: 'Ámbar Vainilla', notas: 'Frutos rojos, Vainilla, Cacao', duracion: '10 - 12+ horas', pOrig: '480.000', p11: '100.000' },
+            { id: 'honor_glory', titulo: 'Honor & Glory', subtitulo: 'Lattafa', genero: 'unisex', img: imgGold, familia: 'Gourmand Frutal', notas: 'Piña glaseada, Crème Brûlée', duracion: '8 - 10 horas', pOrig: '270.000', p11: '100.000' },
+            { id: 'oud_glory', titulo: 'Oud for Glory', subtitulo: 'Lattafa', genero: 'unisex', img: imgDark, familia: 'Amaderado Especiado', notas: 'Azafrán, Oud, Pachulí', duracion: '10 - 12+ horas', pOrig: '240.000', p11: '100.000' },
+
+            // --- EXCLUSIVOS LÍNEA 1.1 ---
+            { id: 'yara_moi_11', titulo: 'Yara Moi', subtitulo: 'Lattafa', genero: 'mujer', img: imgClear, familia: 'Gourmand Frutal', notas: 'Melocotón, Caramelo, Sándalo', duracion: '6 - 8 horas', pOrig: null, p11: '120.000' },
+            { id: 'yara_tous_11', titulo: 'Yara Tous', subtitulo: 'Lattafa', genero: 'mujer', img: imgGold, familia: 'Frutal Tropical', notas: 'Mango, Coco, Vainilla', duracion: '6 - 8 horas', pOrig: null, p11: '120.000' },
+            { id: 'mayar_eco_11', titulo: 'Mayar (Eco/Caja)', subtitulo: 'Lattafa', genero: 'mujer', img: imgPink, familia: 'Frutal Fresco', notas: 'Lichi, Frambuesa, Almizcle', duracion: '6 - 8 horas', pOrig: null, p11: '100.000' },
+            { id: 'delina_11', titulo: 'Delina', subtitulo: 'Parfums de Marly', genero: 'mujer', img: imgPink, familia: 'Floral Rosas', notas: 'Lichi, Rosa Damascena', duracion: '4 - 6 horas', pOrig: null, p11: '80.000' },
+            { id: 'cdn_woman_11', titulo: 'Club de Nuit Woman', subtitulo: 'Armaf', genero: 'mujer', img: imgClear, familia: 'Floral Frutal', notas: 'Naranja, Rosa, Pachulí', duracion: '6 - 8 horas', pOrig: null, p11: '120.000' },
+            { id: 'hawas_her_11', titulo: 'Hawas For Her', subtitulo: 'Rasasi', genero: 'mujer', img: imgGold, familia: 'Floral Frutal', notas: 'Manzana, Iris, Praliné', duracion: '6 - 8 horas', pOrig: null, p11: '120.000' },
+            { id: 'bharara_femme_11', titulo: 'Bharara Niche Femme', subtitulo: 'Bharara', genero: 'mujer', img: imgRed, familia: 'Ámbar Floral', notas: 'Cítricos dulces, Ámbar', duracion: '8 - 10 horas', pOrig: null, p11: '140.000' },
+            { id: 'valentino_donna_11', titulo: 'Valentino Donna', subtitulo: 'Valentino', genero: 'mujer', img: imgDark, familia: 'Ámbar Floral', notas: 'Rosa, Iris, Cuero', duracion: '4 - 6 horas', pOrig: null, p11: '70.000 - 90.000' },
+            { id: 'eclaire_11', titulo: 'Eclaire', subtitulo: 'Lattafa', genero: 'mujer', img: imgGold, familia: 'Gourmand Puro', notas: 'Caramelo, Leche, Vainilla', duracion: '6 - 8 horas', pOrig: null, p11: '160.000' },
+            { id: 'kirke_11', titulo: 'Kirkè', subtitulo: 'Tiziana Terenzi', genero: 'mujer', img: imgClear, familia: 'Frutal Dulce', notas: 'Maracuyá, Melocotón, Almizcle', duracion: '8 - 10 horas', pOrig: null, p11: '110.000' },
+            { id: 'bianco_latte_11', titulo: 'Bianco Latte', subtitulo: 'Giardini Di Toscana', genero: 'mujer', img: imgGold, familia: 'Gourmand Vainilla', notas: 'Caramelo, Miel, Vainilla', duracion: '8 - 10 horas', pOrig: null, p11: '100.000' },
+
+            { id: '9pm_inter_11', titulo: '9PM Inter', subtitulo: 'Afnan', genero: 'hombre', img: imgDark, familia: 'Fresco Especiado', notas: 'Cítricos, Especias, Ámbar', duracion: '4 - 6 horas', pOrig: null, p11: '80.000' },
+            { id: 'hawas_ice_11', titulo: 'Hawas Ice', subtitulo: 'Rasasi', genero: 'hombre', img: imgClear, familia: 'Acuático Fresco', notas: 'Limón helado, Ciruela', duracion: '4 - 6 horas', pOrig: null, p11: '120.000' },
+            { id: 'cdn_man_11', titulo: 'Club de Nuit Man', subtitulo: 'Armaf', genero: 'hombre', img: imgDark, familia: 'Cítrico Amaderado', notas: 'Limón, Abedul, Ámbar gris', duracion: '4 - 6 horas', pOrig: null, p11: '120.000' },
+            { id: 'cdn_urban_11', titulo: 'Club de Nuit Urban', subtitulo: 'Armaf', genero: 'hombre', img: imgDark, familia: 'Especiado Fresco', notas: 'Pimienta, Vetiver, Ambroxan', duracion: '4 - 6 horas', pOrig: null, p11: '120.000' },
+            { id: 'val_uomo_11', titulo: 'Valentino Uomo', subtitulo: 'Valentino', genero: 'hombre', img: imgDark, familia: 'Gourmand Cuero', notas: 'Avellana, Chocolate, Cuero', duracion: '4 - 6 horas', pOrig: null, p11: '90.000' },
+            { id: 'santal33_11', titulo: 'Santal 33', subtitulo: 'Le Labo', genero: 'hombre', img: imgClear, familia: 'Amaderado', notas: 'Cardamomo, Sándalo, Cuero', duracion: '4 - 6 horas', pOrig: null, p11: '90.000' },
+            { id: 'layton_11', titulo: 'Layton', subtitulo: 'Parfums de Marly', genero: 'hombre', img: imgDark, familia: 'Especiado Floral', notas: 'Manzana, Lavanda, Vainilla', duracion: '4 - 6 horas', pOrig: null, p11: '130.000' },
+            { id: 'kalan_11', titulo: 'Kalan', subtitulo: 'Parfums de Marly', genero: 'hombre', img: imgRed, familia: 'Ámbar Especiado', notas: 'Naranja, Especias, Musgo', duracion: '4 - 6 horas', pOrig: null, p11: '130.000' },
+
+            { id: 'khamrah_dukhan_11', titulo: 'Khamrah Dukhan (Caja)', subtitulo: 'Lattafa', genero: 'unisex', img: imgDark, familia: 'Ámbar Ahumado', notas: 'Especias, Humo, Resinas', duracion: '4 - 6 horas', pOrig: null, p11: '80.000' },
+            { id: 'sublime_11', titulo: 'Bade\'e Al Oud Sublime', subtitulo: 'Lattafa', genero: 'unisex', img: imgRed, familia: 'Frutal Aromático', notas: 'Manzana, Ciruela, Musgo', duracion: '4 - 6 horas', pOrig: null, p11: '100.000' },
+            { id: 'emeer_11', titulo: 'Emeer', subtitulo: 'Lattafa', genero: 'unisex', img: imgGold, familia: 'Cítrico Amaderado', notas: 'Limón, Salvia, Sándalo', duracion: '4 - 6 horas', pOrig: null, p11: '100.000' },
+            { id: 'br540_11', titulo: 'Baccarat Rouge', subtitulo: 'Maison F. Kurkdjian', genero: 'unisex', img: imgRed, familia: 'Ámbar Dulce', notas: 'Almendra, Azafrán, Ámbar', duracion: '4 - 6 horas', pOrig: null, p11: '70.000' },
+            { id: 'br540_white_11', titulo: 'Baccarat White', subtitulo: 'Inspiración', genero: 'unisex', img: imgClear, familia: 'Almizcle Floral', notas: 'Jazmín, Almizcle, Maderas', duracion: '4 - 6 horas', pOrig: null, p11: '70.000' },
+            { id: 'erba_pura_11', titulo: 'Erba Pura', subtitulo: 'Xerjoff', genero: 'unisex', img: imgClear, familia: 'Frutal Dulce', notas: 'Naranja, Frutas dulces, Vainilla', duracion: '4 - 6 horas', pOrig: null, p11: '140.000' },
+            { id: 'game_spades_11', titulo: 'Game of Spades', subtitulo: 'Nicho', genero: 'unisex', img: imgDark, familia: 'Amaderado Oriental', notas: 'Especias, Maderas, Pachulí', duracion: '4 - 6 horas', pOrig: null, p11: '160.000' },
+            { id: 'al_haramain_11', titulo: 'Línea Al Haramain', subtitulo: 'Varios', genero: 'unisex', img: imgGold, familia: 'Variedad Nicho', notas: 'Consultar opciones en stock', duracion: '4 - 8 horas', pOrig: null, p11: '100.000 - 160.000' },
+            { id: 'odyssey_all_11', titulo: 'Línea Odyssey', subtitulo: 'Armaf', genero: 'unisex', img: imgPink, familia: 'Gourmand', notas: 'Candee, Marshmallow, Toffee', duracion: '6 - 8 horas', pOrig: null, p11: '110.000 - 120.000' }
+        ];
+
+        function getIconClass(familia) {
+            let fam = familia.toLowerCase();
+            if(fam.includes("cítric") || fam.includes("frutal")) return "fa-lemon";
+            if(fam.includes("dulce") || fam.includes("gourmand")) return "fa-cookie-bite";
+            if(fam.includes("amaderad")) return "fa-tree";
+            if(fam.includes("floral") || fam.includes("rosas")) return "fa-spa";
+            if(fam.includes("acuátic") || fam.includes("fresco")) return "fa-water";
+            if(fam.includes("especiad") || fam.includes("ámbar")) return "fa-fire";
+            return "fa-gem";
+        }
+
+        const origMujeres = database.filter(p => p.genero === 'mujer' && p.pOrig !== null);
+        const origUnisex  = database.filter(p => p.genero === 'unisex' && p.pOrig !== null);
+        const origHombres = database.filter(p => p.genero === 'hombre' && p.pOrig !== null);
+        const line11All   = database.filter(p => p.p11 !== null);
+
+        function inyectarTarjetas(array, contenedorId, tipo) {
+            const contenedor = document.getElementById(contenedorId);
+            let html = '';
+            
+            let cardClass = tipo === '11' ? 'perfume-card card-11 p-5 md:p-6 flex flex-col reveal 3d-item' : 'perfume-card p-5 md:p-6 flex flex-col reveal 3d-item';
+            let btnClass = tipo === '11' ? 'btn-outline btn-outline-red w-full mt-4 cursor-hover-target' : 'btn-outline w-full mt-4 cursor-hover-target';
+            
+            array.forEach((perfume) => {
+                let precioAMostrar = tipo === '11' ? perfume.p11 : perfume.pOrig;
+                let colorPrecio = tipo === '11' ? 'text-red-400' : 'text-gold';
+                if(precioAMostrar && !precioAMostrar.startsWith('$')) precioAMostrar = '$' + precioAMostrar;
+
+                let iconClass = getIconClass(perfume.familia);
+
+                html += `
+                <div class="${cardClass}">
+                    <div class="img-wrapper hologram-wrapper">
+                        <div class="hologram-container">
+                            <div class="hologram-core">
+                                <i class="fas ${iconClass}"></i>
+                            </div>
+                        </div>
+                        <img loading="lazy" src="${perfume.img}" alt="${perfume.titulo}">
+                    </div>
+                    <div class="flex-1 flex flex-col justify-between card-content-3d">
+                        <div class="mb-4">
+                            <h3 class="text-xl md:text-2xl font-bold mb-1 tracking-tight truncate text-white drop-shadow-md">${perfume.titulo}</h3>
+                            <p class="text-gray-400 text-[10px] md:text-xs uppercase tracking-widest truncate font-medium">${perfume.subtitulo}</p>
+                        </div>
+                        <div class="mt-auto">
+                            <span class="text-2xl md:text-3xl font-light ${colorPrecio} block mb-3 drop-shadow-md">${precioAMostrar}</span>
+                            <button onclick="abrirModal('${perfume.id}', '${iconClass}')" class="${btnClass}">
+                                <i class="fas fa-eye mr-2"></i> Ver detalles
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            contenedor.innerHTML = html;
+        }
+
+        function attach3DMouseEffects() {
+            const cards = document.querySelectorAll('.perfume-card');
+            cards.forEach(card => {
+                let ticking = false;
+                card.addEventListener('mousemove', (e) => {
+                    if (!ticking) {
+                        window.requestAnimationFrame(() => {
+                            const rect = card.getBoundingClientRect();
+                            const x = e.clientX - rect.left; 
+                            const y = e.clientY - rect.top;
+                            const centerX = rect.width / 2;
+                            const centerY = rect.height / 2;
+                            
+                            const rotateX = ((y - centerY) / centerY) * -10; 
+                            const rotateY = ((x - centerX) / centerX) * 10;
+                            
+                            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+                            ticking = false;
+                        });
+                        ticking = true;
+                    }
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+                });
+            });
+        }
+
+        function mostrarCatalogo(genero) {
+            const indicador = document.getElementById('indicador-seccion');
+            if(indicador) indicador.style.opacity = '0';
+
+            const secciones = ['mujeres', 'unisex', 'hombres', 'replica'];
+            secciones.forEach(sec => {
+                document.getElementById('seccion-' + sec).classList.remove('activa');
+                document.getElementById('btn-' + sec).classList.remove('active');
+                let mobBtn = document.getElementById('mob-' + sec);
+                if(mobBtn) {
+                    mobBtn.classList.remove('active');
+                    mobBtn.classList.remove('active-red');
+                }
+            });
+
+            document.getElementById('seccion-' + genero).classList.add('activa');
+            document.getElementById('btn-' + genero).classList.add('active');
+            
+            let mobTarget = document.getElementById('mob-' + genero);
+            if(mobTarget) {
+                if(genero === 'replica') mobTarget.classList.add('active-red');
+                else mobTarget.classList.add('active');
+            }
+            
+            setTimeout(() => { 
+                const yOffset = -100; 
+                const element = document.getElementById('seccion-' + genero);
+                const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                window.scrollTo({top: y, behavior: 'smooth'});
+                revelarElementos(); 
+            }, 50);
+        }
+
+        /* --- LOGICA MODAL SOLUCIONADA AQUÍ --- */
+        const modal = document.getElementById('modal-overlay');
+
+        function abrirModal(id, iconClass) {
+            const perfume = database.find(p => p.id === id);
+            
+            document.getElementById('modal-titulo').innerText = perfume.titulo;
+            document.getElementById('modal-subtitulo').innerText = perfume.subtitulo;
+            
+            const modalIcon = document.getElementById('modal-icon-3d');
+            modalIcon.className = `fas ${iconClass} fa-3x text-gold drop-shadow-glow`;
+            if (perfume.p11 && !perfume.pOrig) {
+                modalIcon.classList.remove('text-gold', 'drop-shadow-glow');
+                modalIcon.classList.add('text-red-400', 'drop-shadow-glow-red');
+                modalIcon.parentElement.classList.replace('border-gold/30', 'border-red-500/30');
+            } else {
+                modalIcon.parentElement.classList.replace('border-red-500/30', 'border-gold/30');
+            }
+
+            document.getElementById('modal-duracion').innerHTML = `<i class="fas fa-clock mr-1"></i> ${perfume.duracion}`;
+            document.getElementById('modal-familia').innerHTML = `<i class="fas ${iconClass} mr-1 text-gold"></i> ${perfume.familia}`;
+            
+            const containerPrecios = document.getElementById('modal-precios-container');
+            const badgeCalidad = document.getElementById('modal-badge-calidad');
+            
+            containerPrecios.innerHTML = ''; 
+            let wppText = `Hola! Vengo del catálogo interactivo, me interesa adquirir: ${perfume.titulo}.`;
+
+            if (perfume.pOrig && perfume.p11) {
+                badgeCalidad.className = 'inline-block mb-3 px-3 py-1 rounded text-[10px] uppercase font-bold bg-white/10 text-white border border-white/20';
+                badgeCalidad.innerHTML = `<i class="fas fa-layer-group text-gold mr-2"></i>Original y 1.1`;
+                badgeCalidad.style.display = 'inline-block';
+                
+                containerPrecios.innerHTML = `
+                    <div class="flex justify-between items-center border border-gold/30 bg-gold/10 px-4 py-3 rounded-xl shadow-inner">
+                        <span class="text-[11px] text-gold uppercase font-bold">Original</span>
+                        <span class="text-2xl font-light text-gold">$${perfume.pOrig}</span>
+                    </div>
+                    <div class="flex justify-between items-center border border-red-500/30 bg-red-500/10 px-4 py-3 rounded-xl shadow-inner">
+                        <span class="text-[11px] text-red-400 uppercase font-bold">Línea 1.1</span>
+                        <span class="text-2xl font-light text-red-400">$${perfume.p11}</span>
+                    </div>
+                `;
+            } else if (perfume.pOrig) {
+                badgeCalidad.className = 'inline-block mb-3 px-3 py-1 rounded text-[10px] uppercase font-bold bg-gold/10 text-gold border border-gold/30';
+                badgeCalidad.innerHTML = `<i class="fas fa-check-circle mr-2"></i>100% Original`;
+                badgeCalidad.style.display = 'inline-block';
+
+                containerPrecios.innerHTML = `
+                    <div class="text-center bg-white/5 py-4 rounded-xl border border-white/10">
+                        <span class="text-[10px] text-gray-400 uppercase block mb-1">Precio Final</span>
+                        <span class="text-4xl font-bold text-gold">$${perfume.pOrig}</span>
+                    </div>
+                `;
+                wppText = `Hola! Quiero pedir el perfume Original: ${perfume.titulo} por $${perfume.pOrig}.`;
+            } else {
+                badgeCalidad.className = 'inline-block mb-3 px-3 py-1 rounded text-[10px] uppercase font-bold bg-red-500/10 text-red-400 border border-red-500/30';
+                badgeCalidad.innerHTML = `<i class="fas fa-clone mr-2"></i>Calidad 1.1`;
+                badgeCalidad.style.display = 'inline-block';
+
+                containerPrecios.innerHTML = `
+                    <div class="text-center bg-white/5 py-4 rounded-xl border border-white/10">
+                        <span class="text-[10px] text-gray-400 uppercase block mb-1">Precio Final</span>
+                        <span class="text-4xl font-bold text-red-400">$${perfume.p11}</span>
+                    </div>
+                `;
+                wppText = `Hola! Quiero pedir la Calidad 1.1 de: ${perfume.titulo} por $${perfume.p11}.`;
+            }
+
+            document.getElementById('modal-btn-comprar').href = `https://wa.me/573215228914?text=${encodeURIComponent(wppText)}`;
+            
+            // AGREGO ACTIVACIÓN DEL MODAL Y BLOQUEO DE SCROLL AQUI
+            modal.classList.add('activo');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function cerrarModal() {
+            modal.classList.remove('activo');
+            document.body.style.overflow = 'auto'; // LIBERA EL SCROLL AQUI
+        }
+
+        modal.addEventListener('click', function(e) {
+            if(e.target === modal) cerrarModal();
+        });
+
+        const toastMessages = [
+            "Usuario en Bogotá exploró Asad Original",
+            "Alguien en Medellín reservó Yara Candy",
+            "Nuevo acceso desde Cali a 9PM",
+            "Alguien en Pereira adquirió Khamrah",
+            "Usuario en Bucaramanga reservó Nitro Red"
+        ];
+
+        function showRandomToast() {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast cursor-hover-target';
+            const msg = toastMessages[Math.floor(Math.random() * toastMessages.length)];
+            toast.innerHTML = `
+                <div class="bg-gold/20 w-8 h-8 rounded-full flex items-center justify-center text-gold border border-gold/30">
+                    <i class="fas fa-bolt text-xs"></i>
+                </div>
+                <div>
+                    <p class="text-[9px] text-gray-400 uppercase tracking-widest mb-0.5 font-bold">Actividad Reciente</p>
+                    <p class="text-xs font-medium text-white">${msg}</p>
+                </div>
+            `;
+            container.appendChild(toast);
+
+            void toast.offsetWidth;
+            
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 500);
+            }, 4000);
+        }
+
+        setInterval(() => {
+            if(Math.random() > 0.4) {
+                requestAnimationFrame(showRandomToast);
+            }
+        }, 12000);
+
+        function revelarElementos() {
+            const reveals = document.querySelectorAll('.reveal:not(.active)');
+            if(reveals.length === 0) return;
+            const windowHeight = window.innerHeight;
+            
+            requestAnimationFrame(() => {
+                reveals.forEach(reveal => {
+                    const elementTop = reveal.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - 50) {
+                        reveal.classList.add("active");
+                    }
+                });
+            });
+        }
+        window.addEventListener("scroll", revelarElementos, { passive: true });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            inyectarTarjetas(origMujeres, 'grid-mujer', 'orig');
+            inyectarTarjetas(origUnisex, 'grid-unisex', 'orig');
+            inyectarTarjetas(origHombres, 'grid-hombre', 'orig');
+            inyectarTarjetas(line11All, 'grid-replica', '11');
+            
+            attach3DMouseEffects(); 
+            setTimeout(() => requestAnimationFrame(showRandomToast), 3000);
+        });
+    </script>
+</body>
+</html>
+    
+  </body>
+  
+</html>
